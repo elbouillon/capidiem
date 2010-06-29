@@ -31,12 +31,6 @@ def prompt_with_default(var, default, &block)
   set var, default if eval("#{var.to_s}.empty?")
 end
 
-def guess_diem_lib
-  diem_version = capture("#{php_bin} #{latest_release}/symfony -V")
-
-  /\((.*)\)/.match(diem_version)[1]
-end
-
 def load_database_config(data, env)
   databases = YAML::load(data)
 
@@ -269,7 +263,7 @@ namespace :symfony do
     desc "First time project setup (completly remove DB)"
     task :setup_clear_db do
       if Capistrano::CLI.ui.agree("Do you really want to remove and rebuild your database? All data will be loosed (y/N)")
-        run "#{php_bin} #{latest_release}/symfony dm:setup --env=#{diem_env} --clear-db --no-confirmation")
+        run "#{php_bin} #{latest_release}/symfony dm:setup --env=#{diem_env} --clear-db --no-confirmation"
       end
     end    
     
@@ -295,9 +289,9 @@ namespace :symfony do
     
     desc "reGenerate admin modules"
     task :clear_admin_module do
-      prompt_with_default(:module, "")
+      prompt_with_default(:admin_module, "")
       
-      run "#{php_bin} #{latest_release}/symfony dmAdmin:generate --clear=#{module}"
+      run "#{php_bin} #{latest_release}/symfony dmAdmin:generate --clear=#{admin_module}"
     end
   end
 
