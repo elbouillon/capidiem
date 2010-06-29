@@ -561,12 +561,8 @@ end
 
 # After finalizing update:
 after "deploy:finalize_update" do
-  diem.orm.setup                       # 0. Ensure that ORM is configured
-  diem.orm.build_classes               # 1. (Re)build the model
-  diem.cc                              # 2. Clear cache
-  diem.plugin.publish_assets           # 3. Publish plugin assets
-  diem.project.permissions             # 4. Fix project permissions
+  symfony.dm.setup
   if diem_env.eql?("prod")
-    diem.project.clear_controllers     # 5. Clear controllers in production environment
+    symfony.project.clear_controllers     # 5. Clear controllers in production environment
   end
 end
