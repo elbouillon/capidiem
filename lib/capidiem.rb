@@ -66,7 +66,7 @@ namespace :deploy do
 
   desc "Customize migrate task because diem doesn't need it."
   task :migrate do
-    diem.orm.migrate
+    symfony.orm.migrate
   end
 
   desc "Symlink static directories and static files that need to remain between deployments."
@@ -106,7 +106,7 @@ namespace :deploy do
   desc "Need to overwrite the deploy:cold task so it doesn't try to run the migrations."
   task :cold do
     update
-    diem.orm.build_db_and_load
+    symfony.orm.build_db_and_load
     start
   end
 
@@ -114,8 +114,8 @@ namespace :deploy do
   task :testall do
     update_code
     symlink
-    diem.orm.build_db_and_load
-    diem.tests.all
+    symfony.orm.build_db_and_load
+    symfony.tests.all
   end
 end
 
