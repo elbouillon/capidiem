@@ -16,7 +16,7 @@ Capistrano is an open source tool for running scripts on multiple servers. It’
 
 ### Through GitHub ###
 
-	git clone git://github.com/everzet/capidiem.git
+	git clone git@github.com:elbouillon/capidiem.git
 	cd capidiem
 	gem build capidiem.gemspec
 	sudo gem install capidiem-{version}.gem
