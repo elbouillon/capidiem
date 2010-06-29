@@ -13,13 +13,13 @@ set :asset_children,    %w(web/css web/images web/js)
 set :php_bin,           "php"
 
 # Diem environment on local
-set :diem_env_local, "dev"
+set :diem_env_local,    "dev"
 
 # Diem environment
-set :diem_env,       "prod"
+set :diem_env,          "prod"
 
-# Diem default ORM
-set(:diem_orm)     { guess_diem_orm }
+# Diem default ORM, only works with doctrine (yet…)
+set :diem_orm,          "doctrine"
 
 # Diem lib path
 set(:diem_lib)     { guess_diem_lib }
@@ -29,16 +29,6 @@ def prompt_with_default(var, default, &block)
     Capistrano::CLI.ui.ask("#{var} [#{default}] : ", &block)
   end
   set var, default if eval("#{var.to_s}.empty?")
-end
-
-def guess_diem_orm
-  databases = YAML::load(IO.read('config/databases.yml'))
-
-  if databases[diem_env_local]
-    databases[diem_env_local].keys[0].to_s
-  else
-    databases['all'].keys[0].to_s
-  end
 end
 
 def guess_diem_lib
