@@ -106,7 +106,7 @@ namespace :deploy do
   desc "Need to overwrite the deploy:cold task so it doesn't try to run the migrations."
   task :cold do
     update
-    symfony.orm.build_db_and_load
+    symfony.dm.setup_clear_db
     start
   end
 
@@ -114,7 +114,7 @@ namespace :deploy do
   task :testall do
     update_code
     symlink
-    symfony.orm.build_db_and_load
+    symfony.dm.setup_clear_db
     symfony.tests.all
   end
 end
@@ -265,6 +265,13 @@ namespace :symfony do
     task :setup do
       run "#{php_bin} #{latest_release}/symfony dm:setup"
     end
+    
+    desc "First time project setup (completly remove DB)"
+    task :setup_clear_db do
+      if Capistrano::CLI.ui.agree("Do you really want to remove and rebuild your database? All data will be loosed (y/N)")
+        run "#{php_bin} #{latest_release}/symfony dm:setup --env=#{diem_env} --clear-db --no-confirmation")
+      end
+    end    
     
     desc "Update sitemap"
     task :sitemap_update do
