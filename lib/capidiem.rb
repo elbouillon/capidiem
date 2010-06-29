@@ -13,16 +13,13 @@ set :asset_children,    %w(web/css web/images web/js)
 set :php_bin,           "php"
 
 # Diem environment on local
-set :symfony_env_local,    "dev"
+set :symfony_env_local, "dev"
 
 # Diem environment
-set :symfony_env,          "prod"
+set :symfony_env,       "prod"
 
 # Diem default ORM, only works with doctrine (yet…)
-set :symfony_orm,          "doctrine"
-
-# Diem lib path
-set(:symfony_lib)     { guess_diem_lib }
+set :symfony_orm,       "doctrine"
 
 def prompt_with_default(var, default, &block)
   set(var) do
@@ -420,6 +417,7 @@ namespace :symfony do
       end
     end
   end
+end
 
 namespace :database do
   namespace :dump do
