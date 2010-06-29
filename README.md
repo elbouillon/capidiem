@@ -62,7 +62,7 @@ To deploy your application, simply run:
 
 To configure database on production environment, run:
 
-	cap diem:configure:database
+	cap symfony:configure:database
 
 To deploy your application for the first time, you can run:
 
@@ -116,7 +116,7 @@ This will deploy the application, rebuild the test database, then run all of the
 
 Also, you have command to run your custom diem tasks:
 
-	cap diem
+	cap symfony
 
 If you want to see all of the Capistrano tasks available, you can run:
 
@@ -126,6 +126,7 @@ We’ve been using this setup for a little while now, and it’s saved us a ton 
 
 ## Contributors ##
 
+* Mickael Kurmann (forker): [git@github.com:elbouillon/capidiem.git](git@github.com:elbouillon/capidiem.git)
 * everzet (owner): [http://github.com/everzet](http://github.com/everzet)
 * Arlo (contributor): [http://github.com/arlo](http://github.com/arlo)
 * Xavier Gorse (contributor): [http://github.com/xgorse](http://github.com/xgorse)
