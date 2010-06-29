@@ -19,9 +19,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'capistrano', ">= 2.5.10"
 
-  spec.author = "Konstantin Kudryashov"
-  spec.email = "ever.zet@gmail.com"
-  spec.homepage = "http://everzet.com/projects/diem-helpers/capidiem"
+  spec.authors =  ["Konstantin Kudryashov", "Mickael Kurmann"]
+  spec.email =    ["ever.zet@gmail.com", "mickael.kurmann@gmail.com"]
+  spec.homepage = "http://github.com/elbouillon/capidiem"
   spec.rubyforge_project = "capidiem"
 
 end
