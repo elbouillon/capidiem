@@ -285,9 +285,14 @@ namespace :symfony do
     task :upgrade do
       run "#{php_bin} #{latest_release}/symfony dm:upgrade"
     end
+    
+    desc "reGenerate admin modules"
+    task :clear_admin_module do
+      prompt_with_default(:module, "")
+      
+      run "#{php_bin} #{latest_release}/symfony dmAdmin:generate --clear=#{module}"
+    end
   end
-  
-  
 
   namespace :tests do
     desc "Launches all tests"
