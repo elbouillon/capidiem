@@ -140,6 +140,11 @@ namespace :symfony do
   task :cc do
     run "#{php_bin} #{latest_release}/symfony cache:clear"
   end
+  
+  desc "Shorthand for Diem remove all cache dir content dm:clear-cache"
+  task :ccc do
+    find_and_execute_task("symfony:dm:clear-cache")
+  end
 
   namespace :configure do
     desc "Configure database DSN"
@@ -219,6 +224,70 @@ namespace :symfony do
       run "#{php_bin} #{latest_release}/symfony log:rotate #{application} #{diem_env}"
     end
   end
+  
+  namespace :dm do
+    desc "Remove all cache dir content"
+    task :clear_cache do
+      run "#{php_bin} #{latest_release}/symfony dm:clear-cache"
+    end
+    
+    desc "Ensure required data"
+    task :data do
+      run "#{php_bin} #{latest_release}/symfony dm:data"
+    end
+    
+    desc "Create random records for a model"
+    task :loremize do
+      run "#{php_bin} #{latest_release}/symfony dm:loremize"
+    end
+     
+    desc "Fixes diem directory permissions"
+    task :permissions do
+      run "#{php_bin} #{latest_release}/symfony dm:permissions"
+    end
+    
+    desc "Publishes web assets for all plugins"
+    task :publish_assets do
+      run "#{php_bin} #{latest_release}/symfony dm:publish-assets"
+    end
+    
+    desc "Update search engine index"
+    task :search_update do
+      run "#{php_bin} #{latest_release}/symfony dm:search-update"
+    end
+    
+    desc "Verify if the server matches both Symfony & Diem requirements"
+    task :server_check do
+      run "#{php_bin} #{latest_release}/symfony dm:server-check"
+    end
+    
+    desc "Safely setup a project. Can be run several times without side effect."
+    task :setup do
+      run "#{php_bin} #{latest_release}/symfony dm:setup"
+    end
+    
+    desc "Update sitemap"
+    task :sitemap_update do
+      run "#{php_bin} #{latest_release}/symfony dm:sitemap-update"
+    end
+    
+    desc "Creates a sql backup"
+    task :sql_backup do
+      run "#{php_bin} #{latest_release}/symfony dm:sql-backup"
+    end
+    
+    desc "Synchronize pages according to modules and records."
+    task :sync_pages do
+      run "#{php_bin} #{latest_release}/symfony dm:sync-pages"
+    end
+    
+    desc "Safely upgrade a project to the current Diem version. Can be run several times without side effect."
+    task :upgrade do
+      run "#{php_bin} #{latest_release}/symfony dm:upgrade"
+    end
+  end
+  
+  
 
   namespace :tests do
     desc "Launches all tests"
