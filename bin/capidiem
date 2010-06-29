@@ -74,4 +74,4 @@ files.each do |file, content|
   end
 end
 
-puts "[done] capifonied!"
+puts "[done] capidiemied!"
