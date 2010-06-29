@@ -12,17 +12,17 @@ set :asset_children,    %w(web/css web/images web/js)
 # PHP binary to execute
 set :php_bin,           "php"
 
-# Symfony environment on local
-set :symfony_env_local, "dev"
+# Diem environment on local
+set :diem_env_local, "dev"
 
-# Symfony environment
-set :symfony_env,       "prod"
+# Diem environment
+set :diem_env,       "prod"
 
-# Symfony default ORM
-set(:symfony_orm)     { guess_symfony_orm }
+# Diem default ORM
+set(:diem_orm)     { guess_diem_orm }
 
-# Symfony lib path
-set(:symfony_lib)     { guess_symfony_lib }
+# Diem lib path
+set(:diem_lib)     { guess_diem_lib }
 
 def prompt_with_default(var, default, &block)
   set(var) do
@@ -31,29 +31,29 @@ def prompt_with_default(var, default, &block)
   set var, default if eval("#{var.to_s}.empty?")
 end
 
-def guess_symfony_orm
+def guess_diem_orm
   databases = YAML::load(IO.read('config/databases.yml'))
 
-  if databases[symfony_env_local]
-    databases[symfony_env_local].keys[0].to_s
+  if databases[diem_env_local]
+    databases[diem_env_local].keys[0].to_s
   else
     databases['all'].keys[0].to_s
   end
 end
 
-def guess_symfony_lib
-  symfony_version = capture("#{php_bin} #{latest_release}/symfony -V")
+def guess_diem_lib
+  diem_version = capture("#{php_bin} #{latest_release}/diem -V")
 
-  /\((.*)\)/.match(symfony_version)[1]
+  /\((.*)\)/.match(diem_version)[1]
 end
 
 def load_database_config(data, env)
   databases = YAML::load(data)
 
   if databases[env]
-    db_param = databases[env][symfony_orm]['param']
+    db_param = databases[env][diem_orm]['param']
   else
-    db_param = databases['all'][symfony_orm]['param']
+    db_param = databases['all'][diem_orm]['param']
   end
 
   {
@@ -65,18 +65,18 @@ def load_database_config(data, env)
 end
 
 namespace :deploy do
-  desc "Overwrite the start task because symfony doesn't need it."
+  desc "Overwrite the start task because diem doesn't need it."
   task :start do ; end
 
-  desc "Overwrite the restart task because symfony doesn't need it."
+  desc "Overwrite the restart task because diem doesn't need it."
   task :restart do ; end
 
-  desc "Overwrite the stop task because symfony doesn't need it."
+  desc "Overwrite the stop task because diem doesn't need it."
   task :stop do ; end
 
-  desc "Customize migrate task because symfony doesn't need it."
+  desc "Customize migrate task because diem doesn't need it."
   task :migrate do
-    symfony.orm.migrate
+    diem.orm.migrate
   end
 
   desc "Symlink static directories and static files that need to remain between deployments."
@@ -98,7 +98,7 @@ namespace :deploy do
     end
   end
 
-  desc "Customize the finalize_update task to work with symfony."
+  desc "Customize the finalize_update task to work with diem."
   task :finalize_update, :except => { :no_release => true } do
     run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
     run "mkdir -p #{latest_release}/cache"
@@ -116,7 +116,7 @@ namespace :deploy do
   desc "Need to overwrite the deploy:cold task so it doesn't try to run the migrations."
   task :cold do
     update
-    symfony.orm.build_db_and_load
+    diem.orm.build_db_and_load
     start
   end
 
@@ -124,17 +124,17 @@ namespace :deploy do
   task :testall do
     update_code
     symlink
-    symfony.orm.build_db_and_load
-    symfony.tests.all
+    diem.orm.build_db_and_load
+    diem.tests.all
   end
 end
 
-namespace :symfony do
-  desc "Runs custom symfony task"
+namespace :diem do
+  desc "Runs custom diem task"
   task :default do
     prompt_with_default(:task_arguments, "cache:clear")
 
-    stream "#{php_bin} #{latest_release}/symfony #{task_arguments}"
+    stream "#{php_bin} #{latest_release}/diem #{task_arguments}"
   end
 
   desc "Downloads & runs check_configuration.php on remote"
@@ -148,7 +148,7 @@ namespace :symfony do
 
   desc "Clears the cache"
   task :cc do
-    run "#{php_bin} #{latest_release}/symfony cache:clear"
+    run "#{php_bin} #{latest_release}/diem cache:clear"
   end
 
   namespace :configure do
@@ -161,11 +161,11 @@ namespace :symfony do
       # surpress debug log output to hide the password
       current_logger_level = self.logger.level
       if current_logger_level >= Capistrano::Logger::DEBUG
-        logger.debug %(executing "#{php_bin} #{latest_release}/symfony configure:database '#{dsn}' '#{db_username}' ***")
+        logger.debug %(executing "#{php_bin} #{latest_release}/diem configure:database '#{dsn}' '#{db_username}' ***")
         self.logger.level = Capistrano::Logger::INFO 
       end
 
-      run "#{php_bin} #{latest_release}/symfony configure:database '#{dsn}' '#{db_username}' '#{db_password}'"
+      run "#{php_bin} #{latest_release}/diem configure:database '#{dsn}' '#{db_username}' '#{db_password}'"
 
       # restore logger level
       self.logger.level = current_logger_level
@@ -175,29 +175,29 @@ namespace :symfony do
   namespace :project do
     desc "Disables an application in a given environment"
     task :disable do
-      run "#{php_bin} #{latest_release}/symfony project:disable #{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem project:disable #{diem_env}"
     end
 
     desc "Enables an application in a given environment"
     task :enable do
-      run "#{php_bin} #{latest_release}/symfony project:enable #{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem project:enable #{diem_env}"
     end
 
-    desc "Fixes symfony directory permissions"
+    desc "Fixes diem directory permissions"
     task :permissions do
-      run "#{php_bin} #{latest_release}/symfony project:permissions"
+      run "#{php_bin} #{latest_release}/diem project:permissions"
     end
 
     desc "Optimizes a project for better performance"
     task :optimize do
       prompt_with_default(:application, "frontend")
 
-      run "#{php_bin} #{latest_release}/symfony project:optimize #{application}"
+      run "#{php_bin} #{latest_release}/diem project:optimize #{application}"
     end
 
     desc "Clears all non production environment controllers"
     task :clear_controllers do
-      run "#{php_bin} #{latest_release}/symfony project:clear-controllers"
+      run "#{php_bin} #{latest_release}/diem project:clear-controllers"
     end
 
     desc "Sends emails stored in a queue"
@@ -205,84 +205,84 @@ namespace :symfony do
       prompt_with_default(:message_limit, 10)
       prompt_with_default(:time_limit,    10)
 
-      stream "#{php_bin} #{latest_release}/symfony project:send-emails --message-limit=#{message_limit} --time-limit=#{time_limit} --env=#{symfony_env}"
+      stream "#{php_bin} #{latest_release}/diem project:send-emails --message-limit=#{message_limit} --time-limit=#{time_limit} --env=#{diem_env}"
     end
   end
 
   namespace :plugin do
     desc "Publishes web assets for all plugins"
     task :publish_assets do
-      run "#{php_bin} #{latest_release}/symfony plugin:publish-assets"
+      run "#{php_bin} #{latest_release}/diem plugin:publish-assets"
     end
   end
 
   namespace :log do
     desc "Clears log files"
     task :clear do
-      run "#{php_bin} #{latest_release}/symfony log:clear"
+      run "#{php_bin} #{latest_release}/diem log:clear"
     end
 
     desc "Rotates an application's log files"
     task :rotate do
       prompt_with_default(:application, "frontend")
 
-      run "#{php_bin} #{latest_release}/symfony log:rotate #{application} #{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem log:rotate #{application} #{diem_env}"
     end
   end
 
   namespace :tests do
     desc "Launches all tests"
     task :all do
-      run "#{php_bin} #{latest_release}/symfony test:all"
+      run "#{php_bin} #{latest_release}/diem test:all"
     end
 
     desc "Launches functional tests"
     task :functional do
       prompt_with_default(:application, "frontend")
 
-      run "#{php_bin} #{latest_release}/symfony test:functional #{application}"
+      run "#{php_bin} #{latest_release}/diem test:functional #{application}"
     end
 
     desc "Launches unit tests"
     task :unit do
-      run "#{php_bin} #{latest_release}/symfony test:unit"
+      run "#{php_bin} #{latest_release}/diem test:unit"
     end
   end
 
   namespace :orm do
-    desc "Ensure symfony ORM is properly configured"
+    desc "Ensure diem ORM is properly configured"
     task :setup do
-      find_and_execute_task("symfony:#{symfony_orm}:setup")
+      find_and_execute_task("diem:#{diem_orm}:setup")
     end
   
     desc "Migrates database to current version"
     task :migrate do
-      find_and_execute_task("symfony:#{symfony_orm}:migrate")
+      find_and_execute_task("diem:#{diem_orm}:migrate")
     end
 
     desc "Generate model lib form and filters classes based on your schema"
     task :build_classes do
-      find_and_execute_task("symfony:#{symfony_orm}:build_classes")
+      find_and_execute_task("diem:#{diem_orm}:build_classes")
     end
 
     desc "Generate code & database based on your schema"
     task :build_all do
-      find_and_execute_task("symfony:#{symfony_orm}:build_all")
+      find_and_execute_task("diem:#{diem_orm}:build_all")
     end
 
     desc "Generate code & database based on your schema & load fixtures"
     task :build_all_and_load do
-      find_and_execute_task("symfony:#{symfony_orm}:build_all_and_load")
+      find_and_execute_task("diem:#{diem_orm}:build_all_and_load")
     end
 
     desc "Generate sql & database based on your schema"
     task :build_db do
-      find_and_execute_task("symfony:#{symfony_orm}:build_db")
+      find_and_execute_task("diem:#{diem_orm}:build_db")
     end
 
     desc "Generate sql & database based on your schema & load fixtures"
     task :build_db_and_load do
-      find_and_execute_task("symfony:#{symfony_orm}:build_db_and_load")
+      find_and_execute_task("diem:#{diem_orm}:build_db_and_load")
     end
   end
 
@@ -291,7 +291,7 @@ namespace :symfony do
     task :setup do 
       conf_files_exists = capture("if test -s #{shared_path}/config/databases.yml ; then echo 'exists' ; fi").strip
       if (!conf_files_exists.eql?("exists"))
-        symfony.configure.database
+        diem.configure.database
       end
     end
 
@@ -299,59 +299,59 @@ namespace :symfony do
     task :dql do
       prompt_with_default(:query, "")
 
-      stream "#{php_bin} #{latest_release}/symfony doctrine:dql #{query} --env=#{symfony_env}"
+      stream "#{php_bin} #{latest_release}/diem doctrine:dql #{query} --env=#{diem_env}"
     end
 
     desc "Dumps data to the fixtures directory"
     task :data_dump do
-      run "#{php_bin} #{latest_release}/symfony doctrine:data-dump --env=#{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem doctrine:data-dump --env=#{diem_env}"
     end
 
     desc "Loads YAML fixture data"
     task :data_load do
-      run "#{php_bin} #{latest_release}/symfony doctrine:data-load --env=#{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem doctrine:data-load --env=#{diem_env}"
     end
 
     desc "Loads YAML fixture data without remove"
     task :data_load_append do
-      run "#{php_bin} #{latest_release}/symfony doctrine:data-load --append --env=#{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem doctrine:data-load --append --env=#{diem_env}"
     end
 
     desc "Migrates database to current version"
     task :migrate do
-      run "#{php_bin} #{latest_release}/symfony doctrine:migrate --env=#{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem doctrine:migrate --env=#{diem_env}"
     end
 
     desc "Generate model lib form and filters classes based on your schema"
     task :build_classes do
-      run "#{php_bin} #{latest_release}/symfony doctrine:build --all-classes --env=#{symfony_env}"
+      run "#{php_bin} #{latest_release}/diem doctrine:build --all-classes --env=#{diem_env}"
     end
 
     desc "Generate code & database based on your schema"
     task :build_all do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony doctrine:build --all --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database? (y/N)")
+        run "#{php_bin} #{latest_release}/diem doctrine:build --all --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate code & database based on your schema & load fixtures"
     task :build_all_and_load do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database and load #{symfony_env}'s fixtures? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony doctrine:build --all --and-load --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database and load #{diem_env}'s fixtures? (y/N)")
+        run "#{php_bin} #{latest_release}/diem doctrine:build --all --and-load --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate sql & database based on your schema"
     task :build_db do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony doctrine:build --sql --db --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database? (y/N)")
+        run "#{php_bin} #{latest_release}/diem doctrine:build --sql --db --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate sql & database based on your schema & load fixtures"
     task :build_db_and_load do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database and load #{symfony_env}'s fixtures? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony doctrine:build --sql --db --and-load --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database and load #{diem_env}'s fixtures? (y/N)")
+        run "#{php_bin} #{latest_release}/diem doctrine:build --sql --db --and-load --no-confirmation --env=#{diem_env}"
       end
     end
   end
@@ -366,8 +366,8 @@ namespace :symfony do
       deploy.share_childs
 
       if (!conf_files_exists.eql?("exists"))
-        run "cp #{symfony_lib}/plugins/sfPropelPlugin/config/skeleton/config/propel.ini #{shared_path}/config/propel.ini"
-        symfony.configure.database
+        run "cp #{diem_lib}/plugins/sfPropelPlugin/config/skeleton/config/propel.ini #{shared_path}/config/propel.ini"
+        diem.configure.database
       end
     end
 
@@ -378,34 +378,34 @@ namespace :symfony do
 
     desc "Generate model lib form and filters classes based on your schema"
     task :build_classes do
-      run "php #{latest_release}/symfony propel:build --all-classes --env=#{symfony_env}"
+      run "php #{latest_release}/diem propel:build --all-classes --env=#{diem_env}"
     end
 
     desc "Generate code & database based on your schema"
     task :build_all do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony propel:build --sql --db --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database? (y/N)")
+        run "#{php_bin} #{latest_release}/diem propel:build --sql --db --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate code & database based on your schema & load fixtures"
     task :build_all_and_load do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database and load #{symfony_env}'s fixtures? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony propel:build --sql --db --and-load --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database and load #{diem_env}'s fixtures? (y/N)")
+        run "#{php_bin} #{latest_release}/diem propel:build --sql --db --and-load --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate sql & database based on your schema"
     task :build_db do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony propel:build --sql --db --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database? (y/N)")
+        run "#{php_bin} #{latest_release}/diem propel:build --sql --db --no-confirmation --env=#{diem_env}"
       end
     end
 
     desc "Generate sql & database based on your schema & load fixtures"
     task :build_db_and_load do
-      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{symfony_env}'s database and load #{symfony_env}'s fixtures? (y/N)")
-        run "#{php_bin} #{latest_release}/symfony propel:build --sql --db --and-load --no-confirmation --env=#{symfony_env}"
+      if Capistrano::CLI.ui.agree("Do you really want to rebuild #{diem_env}'s database and load #{diem_env}'s fixtures? (y/N)")
+        run "#{php_bin} #{latest_release}/diem propel:build --sql --db --and-load --no-confirmation --env=#{diem_env}"
       end
     end
   end
@@ -421,7 +421,7 @@ namespace :database do
       config    = ""
 
       run "cat #{shared_path}/config/databases.yml" do |ch, st, data|
-        config = load_database_config data, symfony_env
+        config = load_database_config data, diem_env
       end
 
       case config['type']
@@ -445,7 +445,7 @@ namespace :database do
     task :local do
       filename  = "#{application}.local_dump.#{Time.now.to_i}.sql.bz2"
       file      = "backups/#{filename}"
-      config    = load_database_config IO.read('config/databases.yml'), symfony_env_local
+      config    = load_database_config IO.read('config/databases.yml'), diem_env_local
       sqlfile   = "#{application}_dump.sql"
 
       `mkdir -p backups`
@@ -464,7 +464,7 @@ namespace :database do
     desc "Dump remote database, download it to local & populate here"
     task :to_local do
       filename  = "#{application}.remote_dump.latest.sql.bz2"
-      config    = load_database_config IO.read('config/databases.yml'), symfony_env_local
+      config    = load_database_config IO.read('config/databases.yml'), diem_env_local
       sqlfile   = "#{application}_dump.sql"
 
       database.dump.remote
@@ -492,7 +492,7 @@ namespace :database do
       run "bunzip2 -kc /tmp/#{filename} > /tmp/#{sqlfile}"
 
       run "cat #{shared_path}/config/databases.yml" do |ch, st, data|
-        config = load_database_config data, symfony_env
+        config = load_database_config data, diem_env
       end
 
       case config['type']
@@ -552,12 +552,12 @@ end
 
 # After finalizing update:
 after "deploy:finalize_update" do
-  symfony.orm.setup                       # 0. Ensure that ORM is configured
-  symfony.orm.build_classes               # 1. (Re)build the model
-  symfony.cc                              # 2. Clear cache
-  symfony.plugin.publish_assets           # 3. Publish plugin assets
-  symfony.project.permissions             # 4. Fix project permissions
-  if symfony_env.eql?("prod")
-    symfony.project.clear_controllers     # 5. Clear controllers in production environment
+  diem.orm.setup                       # 0. Ensure that ORM is configured
+  diem.orm.build_classes               # 1. (Re)build the model
+  diem.cc                              # 2. Clear cache
+  diem.plugin.publish_assets           # 3. Publish plugin assets
+  diem.project.permissions             # 4. Fix project permissions
+  if diem_env.eql?("prod")
+    diem.project.clear_controllers     # 5. Clear controllers in production environment
   end
 end

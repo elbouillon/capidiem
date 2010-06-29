@@ -1,31 +1,31 @@
-Deploying symfony Applications with Capistrano
+Deploying diem Applications with Capistrano
 ==============================================
 
-Capistrano is an open source tool for running scripts on multiple servers. It’s primary use is for easily deploying applications. While it was built specifically for deploying Rails apps, it’s pretty simple to customize it to deploy other types of applications. We’ve been working on creating a deployment “recipe” to work with symfony applications to make our job a lot easier.
+Capistrano is an open source tool for running scripts on multiple servers. It’s primary use is for easily deploying applications. While it was built specifically for deploying Rails apps, it’s pretty simple to customize it to deploy other types of applications. We’ve been working on creating a deployment “recipe” to work with diem applications to make our job a lot easier.
 
 ## Prerequisites ##
 
 - Must have SSH access to the server you are deploying to.
 - Must have Ruby and RubyGems installed on your machine (not required for deployment server)’
 
-## Installing Capifony ##
+## Installing Capidiem ##
 
 ### Through RubyGems.org ###
 
-	sudo gem install capifony
+	sudo gem install capidiem
 
 ### Through GitHub ###
 
-	git clone git://github.com/everzet/capifony.git
-	cd capifony
-	gem build capifony.gemspec
-	sudo gem install capifony-{version}.gem
+	git clone git://github.com/everzet/capidiem.git
+	cd capidiem
+	gem build capidiem.gemspec
+	sudo gem install capidiem-{version}.gem
 
-## Setup your project to use Capifony ##
+## Setup your project to use Capidiem ##
 
 CD to your project directory & run:
 
-	capifony .
+	capidiem .
 
 This will create `Capfile` in your project root & `deploy.rb` config file in `config` directory
 
@@ -62,7 +62,7 @@ To deploy your application, simply run:
 
 To configure database on production environment, run:
 
-	cap symfony:configure:database
+	cap diem:configure:database
 
 To deploy your application for the first time, you can run:
 
@@ -114,9 +114,9 @@ We’ve also added a custom task to run your test suite on the production server
 
 This will deploy the application, rebuild the test database, then run all of the tests.
 
-Also, you have command to run your custom symfony tasks:
+Also, you have command to run your custom diem tasks:
 
-	cap symfony
+	cap diem
 
 If you want to see all of the Capistrano tasks available, you can run:
 

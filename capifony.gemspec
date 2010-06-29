@@ -1,13 +1,13 @@
 Gem::Specification.new do |spec|
 
-  spec.name = 'capifony'
+  spec.name = 'capidiem'
   spec.version = '0.4.1'
   spec.platform = Gem::Platform::RUBY
   spec.description = <<-DESC
-    Capistrano is an open source tool for running scripts on multiple servers. It’s primary use is for easily deploying applications. While it was built specifically for deploying Rails apps, it’s pretty simple to customize it to deploy other types of applications. This package is a deployment “recipe” to work with symfony PHP applications.
+    Capistrano is an open source tool for running scripts on multiple servers. It’s primary use is for easily deploying applications. While it was built specifically for deploying Rails apps, it’s pretty simple to customize it to deploy other types of applications. This package is a deployment “recipe” to work with diem PHP applications.
   DESC
   spec.summary = <<-DESC.strip.gsub(/\n\s+/, " ")
-    Deploying symfony PHP applications with Capistrano.
+    Deploying diem PHP applications with Capistrano.
   DESC
 
   spec.files = Dir.glob("{bin,lib}/**/*") + %w(README LICENSE CHANGELOG)
@@ -15,13 +15,13 @@ Gem::Specification.new do |spec|
   spec.has_rdoc = false
 
   spec.bindir = "bin"
-  spec.executables << "capifony"
+  spec.executables << "capidiem"
 
   spec.add_dependency 'capistrano', ">= 2.5.10"
 
   spec.author = "Konstantin Kudryashov"
   spec.email = "ever.zet@gmail.com"
-  spec.homepage = "http://everzet.com/projects/symfony-helpers/capifony"
-  spec.rubyforge_project = "capifony"
+  spec.homepage = "http://everzet.com/projects/diem-helpers/capidiem"
+  spec.rubyforge_project = "capidiem"
 
 end

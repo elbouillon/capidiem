@@ -1,8 +1,8 @@
 == 0.4.1 / June 17, 2010
 
-* added `symfony_env_local` variable, specifying local symfony environment to work with
+* added `diem_env_local` variable, specifying local diem environment to work with
 * added third parameter (blocks) to `prompt_with_default` (as in `ask`)
-* hided password from input & logs in `symfony:configure:database` task
+* hided password from input & logs in `diem:configure:database` task
 * added confirmation dialogs to destructive ORM tasks
 * run `project:clear-controllers` only on `prod` environment
 
@@ -10,7 +10,7 @@
 
 * added propel tasks (thanks to http://github.com/arlo)
 * added orm abstraction
-* added doctrine/symfony tasks
+* added doctrine/diem tasks
 * huge refactoring of mostly everything (thanks to http://github.com/arlo)
 
 == 0.3.3 / June 13, 2010
@@ -42,7 +42,7 @@
 == 0.2.0 / June 5, 2010
 
 * some fixes
-* symfony:check_configuration task
+* diem:check_configuration task
 * database move tasks
 * shared folder tasks (move to_local, move to_remote)
 

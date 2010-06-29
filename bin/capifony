@@ -21,13 +21,13 @@ OptionParser.new do |opts|
 end
 
 if ARGV.empty?
-  abort "Please specify the directory to capifony, e.g. `#{File.basename($0)} .'"
+  abort "Please specify the directory to capidiem, e.g. `#{File.basename($0)} .'"
 elsif !File.exists?(ARGV.first)
   abort "`#{ARGV.first}' does not exist."
 elsif !File.directory?(ARGV.first)
   abort "`#{ARGV.first}' is not a directory."
 elsif ARGV.length > 1
-  abort "Too many arguments; please specify only the directory to capifony."
+  abort "Too many arguments; please specify only the directory to capidiem."
 end
 
 def unindent(string)
@@ -39,7 +39,7 @@ files = {
   "Capfile" => unindent(<<-FILE),
     load 'deploy' if respond_to?(:namespace) # cap2 differentiator
     Dir['plugins/*/lib/recipes/*.rb'].each { |plugin| load(plugin) }
-    load Gem.required_location('capifony', 'capifony.rb')
+    load Gem.required_location('capidiem', 'capidiem.rb')
     load 'config/deploy' # remove this line to skip loading any of the default tasks
   FILE
 
