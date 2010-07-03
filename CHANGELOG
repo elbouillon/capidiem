@@ -1,3 +1,27 @@
 == 0.0.1 / June 29, 2010
 
 * fork from Konstantin Kudryashov version (http://everzet.com/projects/symfony-helpers/capifony)
+
+== 0.0.2 / July 3, 2010
+
+* bugfix for dm:clear-cache task name
+* fixed a f**g typo error and removed unused functions
+* fixed syntax errors
+* fixed typo error in gemspec
+* fixed version error in gemspec
+* renamed capifony gemspec
+* some update, normally this is the working version…
+* update finalize update, diem only need the last one
+* some typo updates
+* fixed typo in doc
+* added dmAdmin clear module command in diem namespace
+* added dm namespace
+* renamed false rename of diem tasks to symfony one, removed propel orm part
+* syntax update
+* renamed capifony.rb to capidiem.rb and bin/capifony
+* removed orm guessing, diem only use doctrine
+* readme update
+* license update
+* initial changelog update
+* updated gemspec file
+* renamed all symfony, Symfony, capyfony, Capyfony instances
