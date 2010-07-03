@@ -13,13 +13,13 @@ set :asset_children,    %w(web/css web/images web/js)
 set :php_bin,           "php"
 
 # Diem environment on local
-set :symfony_env_local, "dev"
+set :diem_env_local, "dev"
 
 # Diem environment
-set :symfony_env,       "prod"
+set :diem_env,       "prod"
 
 # Diem default ORM, only works with doctrine (yet…)
-set :symfony_orm,       "doctrine"
+set :diem_orm,       "doctrine"
 
 def prompt_with_default(var, default, &block)
   set(var) do
@@ -97,6 +97,7 @@ namespace :deploy do
   desc "Need to overwrite the deploy:cold task so it doesn't try to run the migrations."
   task :cold do
     update
+    symfony.configure.database
     symfony.dm.setup_clear_db
     start
   end
@@ -105,7 +106,7 @@ namespace :deploy do
   task :testall do
     update_code
     symlink
-    symfony.dm.setup_clear_db
+    #TODO: lancer correctement tous les tests symfony.dm.setup_clear_db
     symfony.tests.all
   end
 end
@@ -134,7 +135,7 @@ namespace :symfony do
   
   desc "Shorthand for Diem remove all cache dir content dm:clear-cache"
   task :ccc do
-    find_and_execute_task("symfony:dm:clear-cache")
+    find_and_execute_task("symfony:dm:clear_cache")
   end
 
   namespace :configure do
@@ -353,7 +354,7 @@ namespace :symfony do
     task :setup do 
       conf_files_exists = capture("if test -s #{shared_path}/config/databases.yml ; then echo 'exists' ; fi").strip
       if (!conf_files_exists.eql?("exists"))
-        diem.configure.database
+        symfony.configure.database
       end
     end
 
