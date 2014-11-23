@@ -39,7 +39,7 @@ files = {
   "Capfile" => unindent(<<-FILE),
     load 'deploy' if respond_to?(:namespace) # cap2 differentiator
     Dir['plugins/*/lib/recipes/*.rb'].each { |plugin| load(plugin) }
-    load Gem.required_location('capidiem', 'capidiem.rb')
+    load Gem.find_files('capidiem.rb').last.to_s
     load 'config/deploy' # remove this line to skip loading any of the default tasks
   FILE
 
